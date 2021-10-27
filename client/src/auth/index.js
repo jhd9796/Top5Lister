@@ -37,6 +37,14 @@ function AuthContextProvider(props) {
                     loggedIn: true
                 })
             }
+
+            case AuthActionType.LOGIN_USER: {
+                return setAuth({
+                    user: payload.user,
+                    loggedIn: true
+                })
+            }
+
             default:
                 return auth;
         }
@@ -68,6 +76,21 @@ function AuthContextProvider(props) {
             store.loadIdNamePairs();
         }
     }
+
+    auth.loginUser = async function(userData, store){
+        const response = await api.loginUser(userData);      
+        if (response.status === 200) {
+            authReducer({
+                type: AuthActionType.LOGIN_USER,
+                payload: {
+                    user: response.data.user
+                }
+            })
+            history.push("/");
+            store.loadIdNamePairs();
+        }
+    }
+
 
     return (
         <AuthContext.Provider value={{
