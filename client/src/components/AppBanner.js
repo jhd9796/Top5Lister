@@ -80,8 +80,13 @@ export default function AppBanner() {
         }
     }
     
+    /////////////HD
     function getAccountMenu(loggedIn) {
-        return <AccountCircle />;
+        if(loggedIn){
+            return auth.user.firstName.charAt(0) + auth.user.lastName.charAt(0)
+        }else{
+            return <AccountCircle />;
+        }
     }
 
     return (

@@ -20,7 +20,7 @@ getLoggedIn = async (req, res) => {
 };
 
 loginUser = async (req, res) => {
-  console.log("hell");
+  console.log("hello");
   try {
     const { email, password } = req.body;
     if (!email || !password) {
