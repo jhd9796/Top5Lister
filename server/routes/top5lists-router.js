@@ -14,5 +14,5 @@ router.post('/register', UserController.registerUser)
 router.get('/loggedIn', UserController.getLoggedIn)
 
 router.post('/login/', UserController.loginUser) //HD
-router.get('/logout/') //HD
+router.get('/logout/', UserController.logoutUser) //HD
 module.exports = router

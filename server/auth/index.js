@@ -55,7 +55,6 @@ function authManager() {
       return null;
     }
   };
-  
   return this;
 }
 

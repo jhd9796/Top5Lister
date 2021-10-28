@@ -62,22 +62,20 @@ loginUser = async (req, res) => {
   }
 };
 
-
 //HD
-logoutUser = async(req,res) =>{
-  try{
+logoutUser = async (req, res) => {
+  try {
     const token = req.cookies.token;
     console.log("[user-controller:logoutUser] token = " + token);
     await res
       .clearCookie("token", token)
       .status(204)
       .send();
-  }catch(err){
+  } catch (err) {
     console.error(err);
     res.status(500).send();
   }
 };
-
 
 registerUser = async (req, res) => {
   try {
@@ -146,5 +144,5 @@ module.exports = {
   getLoggedIn,
   registerUser,
   loginUser,
-  logoutUser
+  logoutUser,
 };
