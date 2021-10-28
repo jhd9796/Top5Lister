@@ -19,8 +19,8 @@ getLoggedIn = async (req, res) => {
   });
 };
 
+//HD
 loginUser = async (req, res) => {
-  console.log("hello");
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -28,16 +28,7 @@ loginUser = async (req, res) => {
         .status(400)
         .json({ errorMessage: "Please enter all required fields." });
     }
-    console.log("hello");
     const existingUser = await User.findOne({ email: email });
-    const user = new User({
-      firstName: existingUser.firstName,
-      lastName: existingUser.lastName,
-      email: existingUser.email,
-      passwordHash: existingUser.passwordHash,
-    });
-
-    console.log("existing user ===" + existingUser);
     const passwordCorrect = await bcrypt.compare(
       password,
       existingUser.passwordHash
@@ -47,7 +38,7 @@ loginUser = async (req, res) => {
         errorMessage: "Wrong email or password.",
       });
     }
-    const token = auth.signToken(user);
+    const token = auth.signToken(existingUser);
 
     await res
       .cookie("token", token, {
@@ -59,9 +50,9 @@ loginUser = async (req, res) => {
       .json({
         success: true,
         user: {
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
+          firstName: existingUser.firstName,
+          lastName: existingUser.lastName,
+          email: existingUser.email,
         },
       })
       .send();
@@ -70,6 +61,23 @@ loginUser = async (req, res) => {
     res.status(500).send();
   }
 };
+
+
+//HD
+logoutUser = async(req,res) =>{
+  try{
+    const token = req.cookies.token;
+    console.log("[user-controller:logoutUser] token = " + token);
+    await res
+      .clearCookie("token", token)
+      .status(204)
+      .send();
+  }catch(err){
+    console.error(err);
+    res.status(500).send();
+  }
+};
+
 
 registerUser = async (req, res) => {
   try {
@@ -138,4 +146,5 @@ module.exports = {
   getLoggedIn,
   registerUser,
   loginUser,
+  logoutUser
 };

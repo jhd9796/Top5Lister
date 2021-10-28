@@ -41,11 +41,10 @@ const apis = {
     updateTop5ListById,
     deleteTop5ListById,
     getTop5ListById,
-
     getLoggedIn,
     registerUser,
-    loginUser,
-    logoutUser
+    loginUser,  //HD
+    logoutUser  //HD
 }
 
 export default apis

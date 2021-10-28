@@ -1,4 +1,6 @@
 const Top5List = require('../models/top5list-model');
+const auth = require("../auth");
+const User = require("../models/user-model");
 
 createTop5List = (req, res) => {
     const body = req.body;
@@ -32,6 +34,28 @@ createTop5List = (req, res) => {
         })
 }
 
+//HD
+findUserEmailFromReq = async (req)=>{
+    let userId = auth.getUserId(req);
+    try{
+        const existingUser = await User.findOne({_id:userId});
+        if(existingUser){
+            console.log("[top5list-controller.js:findUserEmailFromReq()] Find existing user. = " + existingUser.email);
+            return existingUser.email;
+        }else {
+            console.log("[top5list-controller.js:findUserEmailFromReq()] Cannot find existing user with id = " + userId);
+            return null;
+
+        }
+    }catch (err) {
+        console.log("[user-control:findUserEmailFromReq()] catch error = " + JSON.stringify(err));
+        console.error(err);
+        return null;
+
+    }
+}
+
+
 updateTop5List = async (req, res) => {
     const body = req.body
     console.log("updateTop5List: " + JSON.stringify(body));
@@ -42,7 +66,11 @@ updateTop5List = async (req, res) => {
         })
     }
 
-    Top5List.findOne({ _id: req.params.id }, (err, top5List) => {
+    let userEmail = await findUserEmailFromReq(req); ///HD
+    console.log("[top5list-controller.js:updateTop5List()]  userEmail = " + userEmail); ///HD
+
+    //HD
+    Top5List.findOne({ _id: req.params.id, ownerEmail: userEmail }, (err, top5List) => {
         console.log("top5List found: " + JSON.stringify(top5List));
         if (err) {
             return res.status(404).json({
@@ -76,6 +104,9 @@ updateTop5List = async (req, res) => {
 }
 
 deleteTop5List = async (req, res) => {
+    let userEmail = await findUserEmailFromReq(req); //HD
+    console.log("[top5list-controller.js:deleteTop5List()]  userEmail = " + userEmail); //HD
+
     Top5List.findById({ _id: req.params.id }, (err, top5List) => {
         if (err) {
             return res.status(404).json({
@@ -90,6 +121,7 @@ deleteTop5List = async (req, res) => {
 }
 
 getTop5ListById = async (req, res) => {
+    console.log("[top5list-controller.js:getTop5ListById()] _id = " + req.params.id); //HD
     await Top5List.findById({ _id: req.params.id }, (err, list) => {
         if (err) {
             return res.status(400).json({ success: false, error: err });
@@ -100,7 +132,11 @@ getTop5ListById = async (req, res) => {
  
 ////////////////HD
 getTop5Lists = async (req, res) => {
-    await Top5List.find({ownerEmail: req.params.ownerEmail}, (err, top5Lists) => {
+    let userEmail = await findUserEmailFromReq(req); //HD
+    console.log("[top5list-controller.js:getTop5Lists()]  userEmail = " + userEmail); //HD
+
+
+    await Top5List.find({ownerEmail: userEmail}, (err, top5Lists) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
@@ -115,7 +151,10 @@ getTop5Lists = async (req, res) => {
 
 //////////////////HD
 getTop5ListPairs = async (req, res) => {
-    await Top5List.find({ownerEmail: req.params.ownerEmail}, (err, top5Lists) => {
+
+    let userEmail = await findUserEmailFromReq(req); //HD
+    console.log("[top5list-controller.js:getTop5ListPairs()]  userEmail = " + userEmail); //HD
+    await Top5List.find({ownerEmail: userEmail}, (err, top5Lists) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
