@@ -6,6 +6,7 @@ import ListItem from '@mui/material/ListItem';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteModal from './DeleteModal';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -20,18 +21,22 @@ function ListCard(props) {
     const [text, setText] = useState("");
     const { idNamePair } = props;
 
+    //HD
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+
     function handleLoadList(event, id) {
         if (!event.target.disabled) {
             // CHANGE THE CURRENT LIST
             store.setCurrentList(id);
         }
     }
-
     function handleToggleEdit(event) {
         event.stopPropagation();
         toggleEdit();
     }
-
     function toggleEdit() {
         let newActive = !editActive;
         if (newActive) {
@@ -39,12 +44,11 @@ function ListCard(props) {
         }
         setEditActive(newActive);
     }
-
     async function handleDeleteList(event, id) {
         event.stopPropagation();
         store.markListForDeletion(id);
+        handleOpen();
     }
-
     function handleKeyPress(event) {
         if (event.code === "Enter") {
             let id = event.target.id.substring("list-".length);
@@ -57,6 +61,8 @@ function ListCard(props) {
     }
 
     let cardElement =
+        <>
+        <DeleteModal handleClose={handleClose} open={open}/>
         <ListItem
             id={idNamePair._id}
             key={idNamePair._id}
@@ -78,6 +84,7 @@ function ListCard(props) {
                     </IconButton>
                 </Box>
                 <Box sx={{ p: 1 }}>
+                    {console.log(store.currentList)}
                     <IconButton onClick={(event) => {
                         handleDeleteList(event, idNamePair._id)
                     }} aria-label='delete'>
@@ -85,6 +92,7 @@ function ListCard(props) {
                     </IconButton>
                 </Box>
         </ListItem>
+    </>
 
     if (editActive) {
         cardElement =
