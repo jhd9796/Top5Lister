@@ -24,6 +24,8 @@ function AuthContextProvider(props) {
     auth.getLoggedIn();
   }, []);
 
+  //const [failMessage, setFailMessage] = useState("");
+
   const authReducer = (action) => {
     const { type, payload } = action;
     switch (type) {
@@ -74,6 +76,7 @@ function AuthContextProvider(props) {
 
   auth.registerUser = async function (userData, store) {
     const response = await api.registerUser(userData);
+    console.log("error = " + JSON.stringify(response))
     if (response.status === 200) {
       authReducer({
         type: AuthActionType.REGISTER_USER,
@@ -83,10 +86,8 @@ function AuthContextProvider(props) {
       });
       history.push("/");
       store.loadIdNamePairs();
-    }else{
-      
     }
-  };
+  }
 
   //HD
   auth.loginUser = async function (userData, store) {
@@ -108,7 +109,6 @@ function AuthContextProvider(props) {
     console.log("[auth:index.js:logoutUser] logout user.");
     const response = await api.logoutUser();
     if (response.status === 204) {
-      console.log("hello");
       authReducer({
         type: AuthActionType.LOGOUT_USER,
         payload: {
