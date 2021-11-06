@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import AuthContext from "../auth";
 import Copyright from "./Copyright";
 import Avatar from "@mui/material/Avatar";
@@ -15,12 +15,38 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { GlobalStoreContext } from "../store";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Modal from "@mui/material/Modal";
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
 
 const theme = createTheme();
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 350,
+  bgcolor: "rgb(255, 244, 229)",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
 export default function LoginScreen() {
   const { auth } = useContext(AuthContext);
   const { store } = useContext(GlobalStoreContext);
+
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (auth.errorMessage) {
+      setOpen(true);
+    }
+  }, [auth.errorMessage]);
+  const handleClose = () => {
+    auth.clearErrorMessage();
+    setOpen(false);
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -30,7 +56,8 @@ export default function LoginScreen() {
         email: formData.get("email"),
         password: formData.get("password"),
       },
-      store);
+      store
+    );
   };
 
   return (
@@ -124,6 +151,27 @@ export default function LoginScreen() {
           </Box>
         </Grid>
       </Grid>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Stack sx={{ width: "100%", mx : 1 }} spacing={2}>
+            <Alert severity="warning">
+              {auth.errorMessage ? auth.errorMessage : ""}
+            </Alert>
+          </Stack>
+          <Button
+            onClick={handleClose}
+            color="secondary"
+            sx={{ mt: 1, mb: 2, mx: 13 }}
+          >
+            close
+          </Button>
+        </Box>
+      </Modal>
     </ThemeProvider>
   );
 }

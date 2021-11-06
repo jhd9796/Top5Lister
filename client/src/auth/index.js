@@ -11,6 +11,9 @@ export const AuthActionType = {
   REGISTER_USER: "REGISTER_USER",
   LOGIN_USER: "LOGIN_USER", //HD
   LOGOUT_USER: "LOGOUT_USER", //HD
+  REGISTER_FAIL: "REGISTER_FAIL", //HD
+  LOGIN_FAIL: "LOGIN_FAIL", //HD
+  CLEAR_ERROR_MESSAGE: "CLEAR_ERROR_MESSAGE", //HD
 };
 
 function AuthContextProvider(props) {
@@ -23,8 +26,6 @@ function AuthContextProvider(props) {
   useEffect(() => {
     auth.getLoggedIn();
   }, []);
-
-  //const [failMessage, setFailMessage] = useState("");
 
   const authReducer = (action) => {
     const { type, payload } = action;
@@ -56,6 +57,31 @@ function AuthContextProvider(props) {
           loggedIn: false,
         });
       }
+
+      case AuthActionType.REGISTER_FAIL: {
+        return setAuth({
+          user: null,
+          loggedIn: false,
+          errorMessage: payload.errorMessage,
+        });
+      }
+
+      case AuthActionType.LOGIN_FAIL: {
+        return setAuth({
+          user: null,
+          loggedIn: false,
+          errorMessage: payload.errorMessage,
+        });
+      }
+
+      case AuthActionType.CLEAR_ERROR_MESSAGE: {
+        return setAuth({
+          user: null,
+          loggedIn: false,
+          errorMessage: "",
+        });
+      }
+
       default:
         return auth;
     }
@@ -74,33 +100,53 @@ function AuthContextProvider(props) {
     }
   };
 
+  //HD
   auth.registerUser = async function (userData, store) {
-    const response = await api.registerUser(userData);
-    console.log("error = " + JSON.stringify(response))
-    if (response.status === 200) {
+    try {
+      const response = await api.registerUser(userData);
+      if (response.status === 200) {
+        authReducer({
+          type: AuthActionType.REGISTER_USER,
+          payload: {
+            user: response.data.user,
+          },
+        });
+        history.push("/");
+        store.loadIdNamePairs();
+      }
+    } catch (e) {
       authReducer({
-        type: AuthActionType.REGISTER_USER,
+        type: AuthActionType.REGISTER_FAIL,
         payload: {
-          user: response.data.user,
+          errorMessage: e.response.data.errorMessage,
         },
       });
-      history.push("/");
-      store.loadIdNamePairs();
+      console.log("error = " + e.response.data.errorMessage);
     }
-  }
+  };
 
   //HD
   auth.loginUser = async function (userData, store) {
-    const response = await api.loginUser(userData);
-    if (response.status === 200) {
+    try {
+      const response = await api.loginUser(userData);
+      if (response.status === 200) {
+        authReducer({
+          type: AuthActionType.LOGIN_USER,
+          payload: {
+            user: response.data.user,
+          },
+        });
+        history.push("/");
+        store.loadIdNamePairs();
+      }
+    } catch (e) {
       authReducer({
-        type: AuthActionType.LOGIN_USER,
+        type: AuthActionType.LOGIN_FAIL,
         payload: {
-          user: response.data.user,
+          errorMessage: e.response.data.errorMessage,
         },
       });
-      history.push("/");
-      store.loadIdNamePairs();
+      console.log("error = " + e.response.data.errorMessage);
     }
   };
 
@@ -122,6 +168,12 @@ function AuthContextProvider(props) {
           JSON.stringify(response.data)
       );
     }
+  };
+
+  auth.clearErrorMessage = function () {
+    authReducer({
+      type: AuthActionType.CLEAR_ERROR_MESSAGE,
+    });
   };
 
   return (
