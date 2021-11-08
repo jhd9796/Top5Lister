@@ -38,6 +38,7 @@ loginUser = async (req, res) => {
         errorMessage: "Wrong email or password.",
       });
     }
+    
     const token = auth.signToken(existingUser);
 
     await res
