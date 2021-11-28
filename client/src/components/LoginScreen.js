@@ -158,7 +158,7 @@ export default function LoginScreen() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Stack sx={{ width: "100%", mx : 1 }} spacing={2}>
+          <Stack sx={{ width: "100%", mx: 1 }} spacing={2}>
             <Alert severity="warning">
               {auth.errorMessage ? auth.errorMessage : ""}
             </Alert>

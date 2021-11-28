@@ -9,6 +9,7 @@ import Statusbar from './Statusbar'
 import Top5Item from './Top5Item'
 import WorkspaceScreen from './WorkspaceScreen'
 import LoginScreen from './LoginScreen'
+import WorkBanner from './WorkBanner'
 
 /*
     This serves as a module so that we can import
@@ -27,5 +28,6 @@ export {
     Statusbar, 
     Top5Item, 
     WorkspaceScreen,
-    LoginScreen
+    LoginScreen,
+    WorkBanner
  }
