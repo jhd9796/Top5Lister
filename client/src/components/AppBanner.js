@@ -2,7 +2,6 @@ import { useContext, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom'
 import AuthContext from '../auth';
 import { GlobalStoreContext } from '../store'
-import EditToolbar from './EditToolbar'
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -10,7 +9,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import AccountCircle from '@mui/icons-material/AccountCircle';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 
 
 export default function AppBanner() {
@@ -73,38 +72,33 @@ export default function AppBanner() {
         >
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>        
-
-    let editToolbar = "";
     let menu = loggedOutMenu;
     if (auth.loggedIn) {
         menu = loggedInMenu;
-        if (store.currentList) {
-            editToolbar = <EditToolbar />;
-        }
     }
     
     /////////////HD
     function getAccountMenu(loggedIn) {
         if(loggedIn){
-            return auth.user.firstName.charAt(0).toUpperCase() + auth.user.lastName.charAt(0).toUpperCase();
+            return <Typography variant="h5" sx={{color:'black'}}>{auth.user.firstName.charAt(0).toUpperCase() + auth.user.lastName.charAt(0).toUpperCase()}</Typography>;
         }else{
-            return <AccountCircle />;
+            return <AccountCircleOutlinedIcon style={{color: 'black'}}/>;
         }
     }
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
-                <Toolbar>
+            <AppBar position="static" elevation={3} style={{background: 'rgb(224, 223, 224)'}}>
+                <Toolbar style={{minHeight:'40px'}}>
                     <Typography                        
                         variant="h4"
                         noWrap
                         component="div"
                         sx={{ display: { xs: 'none', sm: 'block' } }}                        
                     >
-                        <Link style={{ textDecoration: 'none', color: 'white' }} to='/'>T<sup>5</sup>L</Link>
+                        <Link style={{ textDecoration: 'none', color: 'rgb(212,175,56)' }} to='/'>T<sup>5</sup>L</Link>
                     </Typography>
-                    <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
+                    <Box sx={{ flexGrow: 1 }}></Box>
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                         <IconButton
                             size="large"

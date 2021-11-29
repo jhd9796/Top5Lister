@@ -14,15 +14,16 @@ import FunctionsOutlinedIcon from "@mui/icons-material/FunctionsOutlined";
 import PeopleOutlineOutlinedIcon from "@mui/icons-material/PeopleOutlineOutlined";
 import SortIcon from "@mui/icons-material/Sort";
 import InputBase from "@mui/material/InputBase";
-import { styled, alpha } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
+import Divider from '@mui/material/Divider';
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  backgroundColor: "white",
   "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
+    backgroundColor: "white",
   },
   marginRight: theme.spacing(2),
   marginLeft: 0,
@@ -60,53 +61,76 @@ export default function WorkBanner() {
   const { auth } = useContext(AuthContext);
   const { store } = useContext(GlobalStoreContext);
   const [anchorEl, setAnchorEl] = useState(null);
-  const isMenuOpen = Boolean(anchorEl);
-
-  const handleSortByMenuOpen = (event) => {
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
-  const handleSortByMenuClose = () => {
+  const handleClose = () => {
     setAnchorEl(null);
   };
 
-  // const handleLogout = () => {
-  //     handleMenuClose();
-  //     auth.logoutUser();
-  // }
-
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar
+        position="static"
+        elevation={0}
+        style={{ background: "rgb(196, 196, 196)" }}
+      >
         <Toolbar>
           <IconButton aria-label="home button" size="large">
-            <HomeOutlinedIcon sx={{ width: 40, height: 40 }} />
+            <HomeOutlinedIcon sx={{ width: 40, height: 40, color: "black" }} />
           </IconButton>
           <IconButton aria-label="all lists button" size="large">
-            <PeopleOutlineOutlinedIcon sx={{ width: 40, height: 40 }} />
+            <PeopleOutlineOutlinedIcon
+              sx={{ width: 40, height: 40, color: "black" }}
+            />
           </IconButton>
           <IconButton aria-label="users button" size="large">
-            <PersonOutlineOutlinedIcon sx={{ width: 40, height: 40 }} />
+            <PersonOutlineOutlinedIcon
+              sx={{ width: 40, height: 40, color: "black" }}
+            />
           </IconButton>
           <IconButton aria-label="community list button" size="large">
-            <FunctionsOutlinedIcon sx={{ width: 40, height: 40 }} />
+            <FunctionsOutlinedIcon
+              sx={{ width: 40, height: 40, color: "black" }}
+            />
           </IconButton>
           <Search>
             <SearchIconWrapper>
-              <SearchIcon />
+              <SearchIcon style={{ color: "grey" }} />
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="Search…"
+              placeholder="Search"
               inputProps={{ "aria-label": "search" }}
+              style={{ color: "grey" }}
             />
           </Search>
           <Box sx={{ flexGrow: 1 }} />
-            <Typography variant="h6" color="black" mt={1}>
-              SORT BY
-            </Typography>
-            <IconButton aria-label="Sort By" size="large">
-              <SortIcon sx={{ width: 40, height: 40 }} />
-            </IconButton>
+          <Typography variant="h6" color="black" mt={1}>
+            SORT BY
+          </Typography>
+          <IconButton aria-label="Sort By" size="large" onClick={handleClick}>
+            <SortIcon sx={{ width: 40, height: 40, color: "black" }} />
+          </IconButton>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            <MenuItem onClick={handleClose}>Publish Date(Newest)</MenuItem>
+            <Divider />
+            <MenuItem onClick={handleClose}>Publish Date(Oldest)</MenuItem>
+            <Divider />
+            <MenuItem onClick={handleClose}>Views</MenuItem>
+            <Divider />
+            <MenuItem onClick={handleClose}>Likes</MenuItem>
+            <Divider />
+            <MenuItem onClick={handleClose}>Dislikes</MenuItem>
+          </Menu>
         </Toolbar>
       </AppBar>
     </Box>
