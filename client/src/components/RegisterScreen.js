@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import AuthContext from "../auth";
 import Copyright from "./Copyright";
+import AppBanner from "./AppBanner.js";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -59,6 +60,8 @@ export default function RegisterScreen() {
   };
 
   return (
+    <>
+    <AppBanner/>
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <Box
@@ -171,5 +174,6 @@ export default function RegisterScreen() {
         </Box>
       </Modal>
     </Container>
+    </>
   );
 }

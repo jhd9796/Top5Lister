@@ -54,15 +54,13 @@ body {
   border-radius: 10px;
 }
 #splash-screen {
-  background-image: linear-gradient(to right, #121217, #adadad);
+  background-image: linear-gradient(to bottom right, #adadad, #141418);
   color: #ddcdc0;
   font-size: 4vw;
   font-weight: bold;
-  /* font-style: italic; */
   border-color: black;
   border-width: 2px;
   border-style: solid;
-  border-radius: 10px;
   padding-left: 10%;
   padding-top: 5%;
   padding-bottom: 5%;
@@ -107,11 +105,15 @@ body {
 
 #top5-workspace {
   position: absolute;
-  left: 0%;
-  top: 15%;
-  width: 100%;
-  height: 80%;
-  background-color: var(--swatch-accent);
+  left: 5%;
+  top: 18%;
+  width: 90%;
+  height: 72%;
+  background-color: rgb(170, 170, 228);
+  border-radius: 16px;
+  border-style: solid;
+  border-width: 1px;
+  border-color:black;
 }
 
 #top5-statusbar {
@@ -130,7 +132,7 @@ body {
 #list-selector-heading {
   position: absolute;
   left: 0%;
-  top: 0%;
+  top: 94%;
   width: 100%;
   height: 10%;
   text-align: center;
@@ -148,12 +150,13 @@ body {
 #list-selector-list {
   position: absolute;
   left: 0%;
-  top: 10%;
+  top: 0%;
   width: 100%;
-  height: 90%;
+  height: 93%;
   display: flex;
   flex-direction: column;
   overflow: scroll;
+  overflow-x: hidden;
 }
 
 .list-card,
@@ -195,7 +198,7 @@ body {
 
 #workspace-home,
 #workspace-edit {
-  position: absolute;
+  /* position: absolute; */
   left: 0%;
   top: 0%;
   width: 100%;
@@ -204,19 +207,22 @@ body {
 
 #edit-numbering {
   position: absolute;
-  left: 0%;
-  top: 0%;
+  left: 3%;
+  top: 6%;
   width: 20%;
-  height: 100%;
+  height: 83%;
   background-color: var(--swatch-status);
 }
 
 #edit-items {
-  position: absolute;
-  left: 20%;
-  top: 0%;
-  width: 80%;
-  height: 100%;
+  /* position: absolute; */
+  left: 2%;
+  right: 20%;
+  top: 5%;
+  width: 96%;
+  height: 53%;
+  padding-top: 0px;
+  padding-bottom: 0px;
   background-color: var(--swatch-primary);
 }
 
@@ -232,9 +238,10 @@ body {
 .item-number {
   justify-content: center;
   width: 100%;
-  border: 1px 0px 1px 1px;
+  border: 8px;
+  border-radius: 16px;
   border-color: black;
-  background-color: linen;
+  background-color: rgb(212, 175, 56);
   color: black;
 }
 
@@ -249,7 +256,7 @@ input {
   padding-left: 5%;
 }
 .top5-item {
-  background-color: var(--swatch-complement);
+  background-color: rgb(212, 175, 56);
 }
 .top5-item-dragged-to {
   background-color: var(--swatch-accent);

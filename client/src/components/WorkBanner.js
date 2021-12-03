@@ -75,6 +75,7 @@ export default function WorkBanner() {
         position="static"
         elevation={0}
         style={{ background: "rgb(196, 196, 196)" }}
+        sx={{marginTop:1}}
       >
         <Toolbar>
           <IconButton aria-label="home button" size="large">
@@ -103,8 +104,10 @@ export default function WorkBanner() {
               placeholder="Search"
               inputProps={{ "aria-label": "search" }}
               style={{ color: "grey" }}
+              onChange={(e)=>{console.log(e.target.value)}}
             />
           </Search>
+
           <Box sx={{ flexGrow: 1 }} />
           <Typography variant="h6" color="black" mt={1}>
             SORT BY

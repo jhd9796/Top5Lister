@@ -11,13 +11,12 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Paper from "@mui/material/Paper";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import { GlobalStoreContext } from "../store";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Modal from "@mui/material/Modal";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
+import AppBanner from "./AppBanner.js";
 
 const theme = createTheme();
 
@@ -61,6 +60,8 @@ export default function LoginScreen() {
   };
 
   return (
+    <>
+    <AppBanner />
     <ThemeProvider theme={theme}>
       <Grid container component="main" sx={{ height: "100vh" }}>
         <CssBaseline />
@@ -122,10 +123,6 @@ export default function LoginScreen() {
                 id="password"
                 autoComplete="current-password"
               />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              />
               <Button
                 type="submit"
                 fullWidth
@@ -137,7 +134,6 @@ export default function LoginScreen() {
               <Grid container>
                 <Grid item xs>
                   <Link href="#" variant="body2">
-                    Forgot password?
                   </Link>
                 </Grid>
                 <Grid item>
@@ -173,5 +169,6 @@ export default function LoginScreen() {
         </Box>
       </Modal>
     </ThemeProvider>
+    </>
   );
 }

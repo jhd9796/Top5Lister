@@ -150,9 +150,6 @@ getTop5Lists = async (req, res) => {
 }
 
 //////////////////HD
-//getAllTop5Lists
-
-//////////////////HD
 getTop5ListPairs = async (req, res) => {
     let userEmail = await findUserEmailFromReq(req); //HD
     console.log("[top5list-controller.js:getTop5ListPairs()]  userEmail = " + userEmail); //HD
@@ -173,7 +170,9 @@ getTop5ListPairs = async (req, res) => {
                 let list = top5Lists[key];
                 let pair = {
                     _id: list._id,
-                    name: list.name
+                    name: list.name,
+                    ownerName: list.ownerName, //HD
+                    items: list.items //HD
                 };
                 pairs.push(pair);
             }
