@@ -20,6 +20,7 @@ import Box from "@mui/material/Box";
 const HomeScreen = () => {
   const { store } = useContext(GlobalStoreContext);
   const [createView, setCreateView] = useState(false);
+  
 
   useEffect(() => {
     store.loadIdNamePairs();
@@ -29,6 +30,11 @@ const HomeScreen = () => {
     setCreateView(true);
     store.createNewList();
   }
+
+  function closeCreateView() {
+    setCreateView(false);
+  }
+
   let editItems = "";
   if (store.currentList) {
     editItems = (
@@ -39,7 +45,7 @@ const HomeScreen = () => {
             position: "absolute",
             top: "9%",
             width: "96%",
-            height: "78%",
+            height: "80%",
             left: "2%",
             borderRadius: "16px",
           }}
@@ -82,52 +88,57 @@ const HomeScreen = () => {
             sx={{
               width: "40%",
               position: "absolute",
-              left: "68%",
-              top: "103%",
+              left: "79%",
+              top: "101%",
             }}
           >
             <Stack spacing={2} direction="row">
               <Button
+                onClick={closeCreateView}
                 style={{
-                  backgroundColor: "black",
-                  width: "123px",
-                  height: "51px",
+                  backgroundColor: "rgb(186, 186, 186)",
+                  width: "132px",
+                  height: "58px",
                   borderRadius: "8px",
+                  borderColor: "black",
+                  borderStyle: "solid",
+                  borderWidth: "1px",
                 }}
-              ></Button>
+              >
+                <Typography
+                  style={{
+                    color: "black",
+                    fontWeight: "bold",
+                    fontSize: "23px",
+                  }}
+                >
+                  Save
+                </Typography>
+              </Button>
               <Button
                 style={{
-                  backgroundColor: "black",
-                  width: "123px",
-                  height: "51px",
+                  backgroundColor: "rgb(186, 186, 186)",
+                  width: "132px",
+                  height: "58px",
                   borderRadius: "8px",
+                  borderColor: "black",
+                  borderStyle: "solid",
+                  borderWidth: "1px",
                 }}
-              ></Button>
+              >
+                <Typography
+                  style={{
+                    color: "black",
+                    fontWeight: "bold",
+                    fontSize: "23px",
+                  }}
+                >
+                  Publish
+                </Typography>
+              </Button>
             </Stack>
           </Box>
         </Box>
-      </>
-    );
-  }
-
-  if (createView) {
-    return (
-      <>
-        <AppBanner />
-        <WorkBanner />
-        <div id="top5-workspace">
-          <div id="workspace-edit">{editItems}</div>
-        </div>
-        <div id="list-selector-heading" style={{ top: "89%" }}>
-          <IconButton
-            aria-label="add"
-            id="add-list-button"
-            onClick={handleCreateNewList}
-          >
-            <AddOutlinedIcon sx={{ width: 62, height: 62, color: "black" }} />
-          </IconButton>
-          <Typography variant="h3">Your Lists</Typography>
-        </div>
       </>
     );
   }
@@ -142,25 +153,47 @@ const HomeScreen = () => {
       </List>
     );
   }
-  return (
-    <>
-      <AppBanner />
-      <WorkBanner />
-      <div id="top5-list-selector">
-        <div id="list-selector-list">{listCard}</div>
-        <div id="list-selector-heading">
+
+  if (createView) {
+    return (
+      <>
+        <AppBanner />
+        <WorkBanner />
+        <div id="top5-workspace">
+          <div id="workspace-edit">{editItems}</div>
+        </div>
+        <div id="list-selector-heading" style={{ top: "89%" }}>
           <IconButton
             aria-label="add"
-            id="add-list-button"
-            onClick={handleCreateNewList}
+            id="add-list-button-disabled"
           >
             <AddOutlinedIcon sx={{ width: 62, height: 62, color: "black" }} />
           </IconButton>
-          <Typography variant="h3">Your Lists</Typography>
+          <Typography variant="h3" style={{opacity:"0.25"}}>Your Lists</Typography>
         </div>
-      </div>
-    </>
-  );
+      </>
+    );
+  } else {
+    return (
+      <>
+        <AppBanner />
+        <WorkBanner />
+        <div id="top5-list-selector">
+          <div id="list-selector-list">{listCard}</div>
+          <div id="list-selector-heading">
+            <IconButton
+              aria-label="add"
+              id="add-list-button"
+              onClick={handleCreateNewList}
+            >
+              <AddOutlinedIcon sx={{ width: 62, height: 62, color: "black" }} />
+            </IconButton>
+            <Typography variant="h3">Your Lists</Typography>
+          </div>
+        </div>
+      </>
+    );
+  }
 };
 
 export default HomeScreen;

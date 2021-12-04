@@ -147,6 +147,11 @@ body {
   float: left;
 }
 
+#add-list-button-disabled{
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
 #list-selector-list {
   position: absolute;
   left: 0%;

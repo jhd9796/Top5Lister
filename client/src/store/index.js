@@ -208,7 +208,7 @@ function GlobalStoreContextProvider(props) {
         let newListName = "Untitled" + store.newListCounter;
         let payload = {
             name: newListName,
-            items: ["?", "?", "?", "?", "?"],
+            items: ["", "", "", "", ""],
             ownerEmail: auth.user.email,
             ownerName: auth.user.firstName + " " + auth.user.lastName
         };

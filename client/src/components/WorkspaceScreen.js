@@ -22,7 +22,7 @@ function WorkspaceScreen() {
         id="edit-items"
         sx={{ width: "100%", bgcolor: "background.paper", paddingTop: "0px", paddingBottom:"0px"}}
       >
-        
+
         {store.currentList.items.map((item, index) => (
           <Top5Item
             key={"top5-item-" + (index + 1)}

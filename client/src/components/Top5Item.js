@@ -3,8 +3,6 @@ import { GlobalStoreContext } from "../store";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import ListItem from "@mui/material/ListItem";
-import IconButton from "@mui/material/IconButton";
-import EditIcon from "@mui/icons-material/Edit";
 /*
     This React component represents a single item in our
     Top 5 List, which can be edited or moved around.
@@ -14,16 +12,12 @@ import EditIcon from "@mui/icons-material/Edit";
 function Top5Item(props) {
   const { store } = useContext(GlobalStoreContext);
   const [editActive, setEditActive] = useState(false);
-  const [draggedTo, setDraggedTo] = useState(0);
-
 
   //HD
   function handleKeyPress(event) {
-    if (event.code === "Enter") {
       let index = event.target.id.substring("list-".length);
       let text = event.target.value;
       toggleEdit();
-    }
   }
 
   //HD
@@ -77,9 +71,6 @@ function Top5Item(props) {
       </ListItem>
     );
   } else {
-    // if (draggedTo) {
-    //   itemClass = "top5-item-dragged-to";
-    // }
     return (
       <ListItem
         id={"item-" + (index + 1)}
@@ -102,9 +93,9 @@ function Top5Item(props) {
           fullWidth
           id={"item-" + (index + 1)}
           className={itemClass}
-          // onKeyPress={handleKeyPress}
+          // onChange={handleKeyPress}
           defaultValue={props.text}
-          inputProps={{ style: { fontSize: 20 } }}
+          inputProps={{ style: { fontSize: 30, height:"1em"} }}
           autoFocus
         />
       </ListItem>
