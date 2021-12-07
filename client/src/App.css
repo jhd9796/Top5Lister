@@ -113,7 +113,7 @@ body {
   border-radius: 16px;
   border-style: solid;
   border-width: 1px;
-  border-color:black;
+  border-color: black;
 }
 
 #top5-statusbar {
@@ -147,7 +147,7 @@ body {
   float: left;
 }
 
-#add-list-button-disabled{
+#add-list-button-disabled {
   opacity: 0.25;
   cursor: not-allowed;
 }
@@ -162,6 +162,16 @@ body {
   flex-direction: column;
   overflow: scroll;
   overflow-x: hidden;
+}
+
+#comment-list {
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+  overflow-x: hidden;
+  width: 50%;
+  height: 181px;
+  background-color: rgb(170, 170, 228);
 }
 
 .list-card,

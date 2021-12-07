@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import AuthContext from "../auth";
 import { GlobalStoreContext } from "../store";
 import AppBar from "@mui/material/AppBar";
@@ -19,17 +19,28 @@ export default function AppBanner() {
   // const location = useLocation();
   // console.log("location~!", location.pathname);
 
+  let guestLogIn = false;
+  if (auth.LoggedIn) {
+    if (auth.user.email === "guest@gmail.com") {
+      guestLogIn = true;
+    }
+  }
+
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+    if (auth.loggedIn) {
+      auth.logoutUser();
+    }
   };
 
   const handleLogout = () => {
     handleMenuClose();
     auth.logoutUser();
+    store.setCommunityListMode(false);
   };
 
   const menuId = "primary-search-account-menu";
@@ -57,6 +68,7 @@ export default function AppBanner() {
       </MenuItem>
     </Menu>
   );
+  
   const loggedInMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -76,14 +88,23 @@ export default function AppBanner() {
       <MenuItem onClick={handleLogout}>Logout</MenuItem>
     </Menu>
   );
+
   let menu = loggedOutMenu;
-  if (auth.loggedIn) {
-    menu = loggedInMenu;
+  if (auth.loggedIn){
+      menu=loggedInMenu
   }
 
   /////////////HD
   function getAccountMenu(loggedIn) {
+    let isGuest = false;
     if (loggedIn) {
+      if (auth.user.email === "guest@gmail.com") {
+        isGuest = true;
+      }
+    }
+    if (isGuest && loggedIn) {
+      return <AccountCircleOutlinedIcon style={{ color: "black" }} />;
+    } else if (loggedIn && !isGuest) {
       return (
         <Typography variant="h5" sx={{ color: "black" }}>
           {auth.user.firstName.charAt(0).toUpperCase() +
@@ -100,7 +121,7 @@ export default function AppBanner() {
       <AppBar
         position="static"
         elevation={4}
-        style={{ background: "rgb(224, 223, 224)" , }}
+        style={{ background: "rgb(224, 223, 224)" }}
       >
         <Toolbar style={{ minHeight: "40px" }}>
           <Typography

@@ -21,13 +21,12 @@ function AuthContextProvider(props) {
   const [auth, setAuth] = useState({
     user: null,
     loggedIn: false,
-    guest: false
   });
   const history = useHistory();
 
   useEffect(() => {
     auth.getLoggedIn();
-  }, []);
+  }, []); 
 
   const authReducer = (action) => {
     const { type, payload } = action;
@@ -36,14 +35,12 @@ function AuthContextProvider(props) {
         return setAuth({
           user: payload.user,
           loggedIn: payload.loggedIn,
-          guest: false
         });
       }
       case AuthActionType.REGISTER_USER: {
         return setAuth({
           user: payload.user,
           loggedIn: true,
-          guest: false
         });
       }
       //HD
@@ -51,7 +48,6 @@ function AuthContextProvider(props) {
         return setAuth({
           user: payload.user,
           loggedIn: true,
-          guest: false
         });
       }
 
@@ -60,7 +56,7 @@ function AuthContextProvider(props) {
         return setAuth({
           user: payload.user,
           loggedIn: false,
-          guest: false
+
         });
       }
 
@@ -69,7 +65,7 @@ function AuthContextProvider(props) {
           user: null,
           loggedIn: false,
           errorMessage: payload.errorMessage,
-          guest: false
+    
         });
       }
 
@@ -78,7 +74,7 @@ function AuthContextProvider(props) {
           user: null,
           loggedIn: false,
           errorMessage: payload.errorMessage,
-          guest: false
+       
         });
       }
 
@@ -87,7 +83,7 @@ function AuthContextProvider(props) {
           user: null,
           loggedIn: false,
           errorMessage: "",
-          guest: false
+          
         });
       }
       default:

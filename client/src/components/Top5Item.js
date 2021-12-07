@@ -11,96 +11,50 @@ import ListItem from "@mui/material/ListItem";
 */
 function Top5Item(props) {
   const { store } = useContext(GlobalStoreContext);
-  const [editActive, setEditActive] = useState(false);
 
-  //HD
-  function handleKeyPress(event) {
-      let index = event.target.id.substring("list-".length);
-      let text = event.target.value;
-      toggleEdit();
-  }
-
-  //HD
-  function handleToggleEdit(event) {
-    event.stopPropagation();
-    toggleEdit();
-  }
-
-  //HD
-  function toggleEdit() {
-    let newActive = !editActive;
-    if (newActive) {
-      store.setIsItemEditActive();
-    }
-    setEditActive(newActive);
-  }
-
-  //HD
-  let editStatus = false;
-  if (store.isItemEditActive) {
-    editStatus = true;
-  }
-
-  let { index } = props;
+  let { index, top5Items, setTop5Items } = props;
   let itemClass = "top5-item";
 
-  if (editActive) {
-    return (
-      <ListItem
-        id={"item-" + (index + 1)}
-        key={props.key}
-        className={itemClass}
-        draggable="true"
-        sx={{ display: "flex", p: 1 }}
-        style={{
-          fontSize: "20pt",
-          width: "100%",
-        }}
-      >
-        <TextField
-          margin="none"
-          required
-          fullWidth
-          id={"item-" + (index + 1)}
-          className={itemClass}
-          onKeyPress={handleKeyPress}
-          defaultValue={props.text}
-          inputProps={{ style: { fontSize: 20 } }}
-          autoFocus
-        />
-      </ListItem>
-    );
-  } else {
-    return (
-      <ListItem
-        id={"item-" + (index + 1)}
-        key={props.key}
-        className={itemClass}
-        draggable="true"
-        sx={{ display: "flex", p: 1 }}
-        style={{
-          fontSize: "20pt",
-          width: "100%",
-          borderRadius:"6px",
-          marginTop:"0px",
-          marginBottom:"11px",
-          backgroundColor:"rgb(212, 175, 56)"
-        }}
-      >
-        <TextField
-          margin="none"
-          required
-          fullWidth
-          id={"item-" + (index + 1)}
-          className={itemClass}
-          // onChange={handleKeyPress}
-          defaultValue={props.text}
-          inputProps={{ style: { fontSize: 30, height:"1em"} }}
-          autoFocus
-        />
-      </ListItem>
-    );
+  function handleUpdateItems(event, index) {
+    console.log("index !!!!!!!!!!! " + index + top5Items + event.target.value);
+  
+    setTop5Items((prev) => {
+      const newItems = [...prev];
+      console.log("@#!@#@!!!! " +newItems.splice(index, 1, event.target.value))
+      newItems.splice(index, 1, event.target.value);
+      return newItems
+    });
   }
+  console.log("index= " + index);
+
+  return (
+    <ListItem
+      id={"item-" + (index + 1)}
+      // key={key}
+      className={itemClass}
+      sx={{ display: "flex", p: 1 }}
+      style={{
+        fontSize: "20pt",
+        width: "100%",
+        borderRadius: "6px",
+        marginTop: "0px",
+        marginBottom: "11px",
+        backgroundColor: "rgb(212, 175, 56)",
+      }}
+    >
+      <TextField
+        margin="none"
+        required
+        fullWidth
+        id={"item-" + (index + 1)}
+        className={itemClass}
+        value={top5Items[index]}
+        onChange={(event) => handleUpdateItems(event, index)}
+        inputProps={{ style: { fontSize: 30, height: "1em" } }}
+        autoFocus
+      />
+    </ListItem>
+  );
 }
 
 export default Top5Item;

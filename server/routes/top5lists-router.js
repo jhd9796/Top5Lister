@@ -9,7 +9,10 @@ router.put('/top5list/:id', auth.verify, Top5ListController.updateTop5List)
 router.delete('/top5list/:id', auth.verify, Top5ListController.deleteTop5List)
 router.get('/top5list/:id', auth.verify, Top5ListController.getTop5ListById)
 router.get('/top5lists', auth.verify, Top5ListController.getTop5Lists)
+router.get('/top5listsAllUser', Top5ListController.getTop5ListsAllUser)
 router.get('/top5listpairs', auth.verify, Top5ListController.getTop5ListPairs)
+
+router.get('/top5listpairsAllUser', Top5ListController.top5listpairsAllUser)
 router.post('/register', UserController.registerUser)
 router.get('/loggedIn', UserController.getLoggedIn)
 

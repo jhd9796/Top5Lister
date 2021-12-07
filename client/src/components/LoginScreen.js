@@ -36,6 +36,7 @@ export default function LoginScreen() {
   const { auth } = useContext(AuthContext);
   const { store } = useContext(GlobalStoreContext);
 
+  
   const [open, setOpen] = useState(false);
   useEffect(() => {
     if (auth.errorMessage) {

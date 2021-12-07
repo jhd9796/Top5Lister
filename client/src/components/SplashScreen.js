@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { GlobalStoreContext } from "../store";
 import { React } from "react";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
@@ -20,6 +21,17 @@ const style = {
 
 export default function SplashScreen() {
   const { auth } = useContext(AuthContext);
+  const { store } = useContext(GlobalStoreContext);
+  function handleGuestLogin(event){
+    auth.loginUser(
+      {
+        email: "guest@gmail.com",
+        password: "guest1234",
+      },
+      store
+    );
+    store.setCommunityListMode(true);
+  }
 
   return (
     <div id="splash-screen">
@@ -53,7 +65,7 @@ export default function SplashScreen() {
           <Button component={Link} to="/register/" style={style}>
             Create Account
           </Button>
-          <Button style={style}>Continue as Guest</Button>
+          <Button onClick={handleGuestLogin} style={style}>Continue as Guest</Button>
         </Stack>
       </Box>
       <Box

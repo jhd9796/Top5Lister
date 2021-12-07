@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import { GlobalStoreContext } from "../store";
+import AuthContext from "../auth";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -10,6 +11,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DeleteModal from "./DeleteModal";
 import Top5Item from "./Top5Item.js";
+import Stack from "@mui/material/Stack";
+import List from "@mui/material/List";
 
 import {
   ThumbUpOffAlt,
@@ -25,37 +28,77 @@ import {
     @author McKilla Gorilla
 
 */
+const notPublishedStyle = {
+  fontSize: "20pt",
+  fontWeight: "bold",
+  width: "100%",
+  backgroundColor: "rgb(255, 255, 241)",
+  borderColor: "black",
+  borderRadius: "16px",
+  borderStyle: "solid",
+  borderWidth: "2px",
+};
+const publishedStyle = {
+  fontSize: "20pt",
+  fontWeight: "bold",
+  width: "100%",
+  backgroundColor: "rgb(170, 170, 228, 1)",
+  borderColor: "black",
+  borderRadius: "16px",
+  borderStyle: "solid",
+  borderWidth: "2px",
+};
+
+const purpleColor = {
+  backgroundColor: "rgb(170, 170, 228)",
+  width: "50%",
+};
+
+const yellowColor = {
+  backgroundColor: "rgb(255, 255, 241)",
+  width: "50%",
+};
 
 function ListCard(props) {
+  const { auth } = useContext(AuthContext);
   const { store } = useContext(GlobalStoreContext);
-  const [editActive, setEditActive] = useState(false);
   const [text, setText] = useState("");
   const [extendView, setExtendView] = useState(false); ////////HD
-  const { idNamePair } = props;
+  const {
+    idNamePair,
+    // createView,
+    setCreateView,
+    // top5Items,
+    setTop5Items,
+    // newListName,
+    // setNewListName,
+  } = props;
+
+  // console.log("[ListCard] Initial idNamePair = " + JSON.stringify(idNamePair));
 
   //HD
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  function handleLoadList(event, id) {
-    if (!event.target.disabled) {
-      // CHANGE THE CURRENT LIST
-      store.setCurrentList(id);
-    }
+  // console.log("[ListCard] idNamePair = " + JSON.stringify(idNamePair));
+
+  function handleEditView() {
+    setCreateView(true);
+    const editItems = idNamePair.items;
+    setTop5Items(editItems);
+    store.setCurrentListIDName(idNamePair._id, idNamePair.name);
+    store.setCurrentListById(idNamePair._id);
   }
 
-  function handleToggleEdit(event) {
-    event.stopPropagation();
-    toggleEdit();
+  function handleExtendView(event) {
+    store.changeViewsCount(idNamePair._id);
+    // event.stopPropagation();
+    setExtendView(true);
   }
 
-  function toggleEdit() {
-    let newActive = !editActive;
-    if (newActive) {
-      store.setIsListNameEditActive();
-    }
-    setEditActive(newActive);
+  function handleCloseExtendView(event) {
+    setExtendView(false);
   }
 
   async function handleDeleteList(event, id) {
@@ -64,19 +107,253 @@ function ListCard(props) {
     handleOpen();
   }
 
-  function handleKeyPress(event) {
-    if (event.code === "Enter") {
-      let id = event.target.id.substring("list-".length);
-      store.changeListName(id, text);
-      toggleEdit();
+  function handleThumbDownOff(event) {
+    // console.log("[ListCard:handleThumbDownOff] user = " + auth.user);
+    if (auth.user == null) {
+      return;
+    }
+    if (idNamePair.likes.indexOf(auth.user.email) !== -1) {
+      // console.log("[ListCard:handleThumbUpOff] ALREADY vote for LIKE");
+    } else {
+      if (idNamePair.dislikes.indexOf(auth.user.email) === -1) {
+        idNamePair.dislikes.push(auth.user.email);
+      } else {
+        idNamePair.dislikes.pop(auth.user.email);
+        // console.log(
+        //   "[ListCard:handleThumbDownOff] User Already vote for dislike. Removed"
+        // );
+      }
+      store.changeThumbDownCount(idNamePair._id, idNamePair.dislikes);
+    }
+  }
+  function handleThumbUpOff(event) {
+    // console.log("[ListCard:handleThumbUpOff] user = " + auth.user);
+    if (auth.user == null) {
+      return;
+    }
+    if (idNamePair.dislikes.indexOf(auth.user.email) !== -1) {
+      // console.log("[ListCard:handleThumbUpOff] ALREADY vote for DISLIKE");
+    } else {
+      if (idNamePair.likes.indexOf(auth.user.email) === -1) {
+        idNamePair.likes.push(auth.user.email);
+      } else {
+        idNamePair.likes.pop(auth.user.email);
+        // console.log(
+        //   "[ListCard:handleThumbUpOff] User Already vote for like. Removed"
+        // );
+      }
+      store.changeThumbUpCount(idNamePair._id, idNamePair.likes);
     }
   }
 
-  function handleUpdateText(event) {
-    setText(event.target.value);
+  function handleKeyPress(event) {
+    // console.log("enter succeeded");
+    event.stopPropagation();
+    if (event.code === "Enter") {
+      console.log("comments ======   " + event.target.value);
+      let username = auth.user.firstName + " " + auth.user.lastName;
+      let newComment = [username, event.target.value];
+      idNamePair.comments.unshift(newComment);
+      // console.log(
+      //   "idNamePair.comments =====   " + JSON.stringify(idNamePair.comments)
+      // );
+      store.updateTop5Comment(idNamePair._id, idNamePair.comments);
+    }
+  }
+  let guestButtonDisabled = false;
+  if (auth.user.email === "guest@gmail.com") {
+    guestButtonDisabled = true;
   }
 
-  // let listInformation = <></>;
+  let hiddenView = (
+    <Box
+      sx={{
+        id: "MiddleBoxInListItem",
+        display: "grid",
+        gridAutoColumns: "1fr",
+        gap: 1,
+      }}
+    >
+      <Box
+        sx={{
+          gridRow: "1",
+          gridColumn: "span 2",
+        }}
+      >
+        <Stack spacing={2} direction="row">
+          <Box
+            style={{
+              backgroundColor: "rgb(45, 46, 112)",
+              borderRadius: "16px",
+              borderStyle: "solid",
+              borderColor: "black",
+              borderWidth: "2px",
+              width: "50%",
+            }}
+          >
+            <Typography
+              style={{ fontSize: "30px", color: "rgb(187, 156, 62)" }}
+            >
+              {"1. " + idNamePair.items[0]}
+              <br />
+              {"2. " + idNamePair.items[1]}
+              <br />
+              {"3. " + idNamePair.items[2]}
+              <br />
+              {"4. " + idNamePair.items[3]}
+              <br />
+              {"5. " + idNamePair.items[4]}
+              <br />
+            </Typography>
+          </Box>
+          <Box
+            id="comment-list"
+            style={idNamePair.isListPublished ? purpleColor : yellowColor}
+          >
+            <List>
+              {idNamePair.comments.map((pair) => (
+                <Box
+                  key={pair._id}
+                  sx={{
+                    boxShadow: 3,
+                  }}
+                  style={{
+                    backgroundColor: "rgb(212, 175, 56)",
+                    margin: "3px",
+                    borderRadius: "8px",
+                    borderWidth: "1px",
+                    borderStyle: "solid",
+                    height: "70px",
+                  }}
+                >
+                  <Typography
+                    style={{
+                      fontSize: "10px",
+                      fontWeight: "bold",
+                      textDecoration: "underline",
+                      color: "blue",
+                      marginTop: "6px",
+                      marginLeft: "18px",
+                    }}
+                  >
+                    {pair[0]}
+                  </Typography>
+                  <Typography style={{ marginLeft: "18px" }}>
+                    {pair[1]}
+                  </Typography>
+                </Box>
+              ))}
+            </List>
+          </Box>
+        </Stack>
+        <TextField
+          id="listName"
+          variant="outlined"
+          size="small"
+          placeholder="Add comment"
+          onKeyPress={handleKeyPress}
+          disabled={guestButtonDisabled || !idNamePair.isListPublished}
+          style={{
+            backgroundColor: "white",
+            width: "400px",
+            position: "absolute",
+            left: "50.8%",
+            bottom: "16%",
+            width: "47%",
+          }}
+        />
+      </Box>
+    </Box>
+  );
+
+  let arrowCircleDown = (
+    <IconButton
+      sx={{
+        gridRow: "1",
+        gridColumn: "span 1",
+      }}
+      onClick={handleExtendView}
+      aria-label="ArrowCircleDown"
+    >
+      <ArrowCircleDown style={{ fontSize: "20pt" }} />
+    </IconButton>
+  );
+
+  let arrowCircleUp = (
+    <IconButton
+      sx={{
+        gridRow: "1",
+        gridColumn: "span 1",
+      }}
+      onClick={handleCloseExtendView}
+      aria-label="ArrowCircleDown"
+    >
+      <ArrowCircleUp style={{ fontSize: "20pt" }} />
+    </IconButton>
+  );
+
+  let editMark = (
+    <Typography
+      sx={{
+        lineHeight: "2",
+        fontWeight: "bold",
+        fontSize: "12pt",
+        color: "red",
+      }}
+      onClick={handleEditView}
+    >
+      "Edit"
+    </Typography>
+  );
+
+  let publishedMark = (
+    <Typography
+      sx={{
+        lineHeight: "2",
+        fontWeight: "bold",
+        fontSize: "12pt",
+        color: "black",
+      }}
+    >
+      {"Published: " + JSON.stringify(idNamePair.published).substring(1, 11)}
+    </Typography>
+  );
+
+  let deleteIconVisible = (
+    <IconButton
+      sx={{
+        gridRow: "1",
+        gridColumn: "span 1",
+      }}
+      onClick={(event) => {
+        handleDeleteList(event, idNamePair._id);
+      }}
+      aria-label="delete"
+    >
+      <DeleteIcon style={{ fontSize: "32pt" }} />
+    </IconButton>
+  );
+
+  let blankIconSpace = (
+    <IconButton
+      disabled={true}
+      sx={{
+        gridRow: "1",
+        gridColumn: "span 1",
+      }}
+      aria-label="delete"
+    >
+      <DeleteIcon style={{ fontSize: "32pt", opacity: "0" }} />
+    </IconButton>
+  );
+
+  let deleteIcon = "";
+  if (store.getCommunityListMode()) {
+    console.log("store.communityListMode =====" + store.getCommunityListMode());
+    deleteIcon = blankIconSpace;
+  } else {
+    deleteIcon = deleteIconVisible;
+  }
 
   let cardElement = (
     <>
@@ -86,19 +363,7 @@ function ListCard(props) {
         key={idNamePair._id}
         sx={{ marginTop: "10px", display: "flex", p: 1 }}
         button
-        // onClick={(event) => {
-        //   handleLoadList(event, idNamePair._id);
-        // }}
-        style={{
-          fontSize: "20pt",
-          fontWeight: "bold",
-          width: "100%",
-          backgroundColor: "rgb(170, 170, 228, 1)",
-          borderColor: "black",
-          borderRadius: "16px",
-          borderStyle: "solid",
-          borderWidth: "2px",
-        }}
+        style={idNamePair.isListPublished ? publishedStyle : notPublishedStyle}
       >
         <Box
           sx={{
@@ -155,7 +420,8 @@ function ListCard(props) {
                     gridRow: "1",
                     gridColumn: "span 1",
                   }}
-                  onClick={handleToggleEdit}
+                  disabled={guestButtonDisabled}
+                  onClick={handleThumbUpOff}
                   aria-label="ThumbUpOffAlt"
                 >
                   <ThumbUpOffAlt style={{ fontSize: "32pt" }} />
@@ -170,7 +436,7 @@ function ListCard(props) {
                     gridColumn: "span 1",
                   }}
                 >
-                  "2M"
+                  {idNamePair.likes.length}
                 </Typography>
 
                 <IconButton
@@ -178,7 +444,8 @@ function ListCard(props) {
                     gridRow: "1",
                     gridColumn: "span 1",
                   }}
-                  onClick={handleToggleEdit}
+                  disabled={guestButtonDisabled}
+                  onClick={handleThumbDownOff}
                   aria-label="ThumbDownOffAlt"
                 >
                   <ThumbDownOffAlt style={{ fontSize: "32pt" }} />
@@ -193,64 +460,13 @@ function ListCard(props) {
                     gridColumn: "span 1",
                   }}
                 >
-                  "55K"
+                  {idNamePair.dislikes.length}
                 </Typography>
-                <IconButton
-                  sx={{
-                    gridRow: "1",
-                    gridColumn: "span 1",
-                  }}
-                  onClick={(event) => {
-                    handleDeleteList(event, idNamePair._id);
-                  }}
-                  aria-label="delete"
-                >
-                  <DeleteIcon style={{ fontSize: "32pt" }} />
-                </IconButton>
+                {deleteIcon}
               </Box>
             </Box>
           </Box>
-          <Box
-            sx={{
-              id: "MiddleBoxInListItem",
-              display: "grid",
-              gridAutoColumns: "1fr",
-              gap: 1,
-            }}
-          >
-            <Box
-              sx={{
-                gridRow: "1",
-                gridColumn: "span 2",
-              }}
-            >
-              <Box
-                style={{
-                  backgroundColor: "rgb(45, 46, 112)",
-                  borderRadius: "16px",
-                  borderStyle: "solid",
-                  borderColor: "black",
-                  borderWidth: "2px",
-                }}
-              >
-                <Typography
-                  style={{ fontSize: "30px", color: "rgb(187, 156, 62)" }}
-                >
-                  {"1. " + idNamePair.items[0]}
-                  <br />
-                  {"2. " + idNamePair.items[1]}
-                  <br />
-                  {"3. " + idNamePair.items[2]}
-                  <br />
-                  {"4. " + idNamePair.items[3]}
-                  <br />
-                  {"5. " + idNamePair.items[4]}
-                  <br />
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-
+          {extendView && hiddenView}
           <Box
             sx={{
               id: "LowerBoxInListItem",
@@ -265,19 +481,8 @@ function ListCard(props) {
                 gridColumn: "span 2",
               }}
             >
-              <Typography
-                sx={{
-                  lineHeight: "2",
-                  fontWeight: "bold",
-                  fontSize: "12pt",
-                  color: "red",
-                }}
-                onClick={handleToggleEdit}
-              >
-                "Edit"
-              </Typography>
+              {idNamePair.isListPublished ? publishedMark : editMark}
             </Box>
-            {console.log(store.currentList)}
             <Box
               sx={{
                 gridRow: "1",
@@ -300,19 +505,9 @@ function ListCard(props) {
                     fontSize: "12pt",
                   }}
                 >
-                  "Views: 12,123,122"
+                  {"Views: " + idNamePair.views}
                 </Typography>
-
-                <IconButton
-                  sx={{
-                    gridRow: "1",
-                    gridColumn: "span 1",
-                  }}
-                  // onClick={handleToggleEdit}
-                  aria-label="ArrowCircleDown"
-                >
-                  <ArrowCircleDown style={{ fontSize: "20pt" }} />
-                </IconButton>
+                {extendView ? arrowCircleUp : arrowCircleDown}
               </Box>
             </Box>
           </Box>
@@ -320,28 +515,6 @@ function ListCard(props) {
       </ListItem>
     </>
   );
-
-  if (editActive) {
-    cardElement = (
-      <TextField
-        margin="normal"
-        required
-        fullWidth
-        id={"list-" + idNamePair._id}
-        label="Top 5 List Name"
-        name="name"
-        autoComplete="Top 5 List Name"
-        className="list-card"
-        onKeyPress={handleKeyPress}
-        onChange={handleUpdateText}
-        defaultValue={idNamePair.name}
-        inputProps={{ style: { fontSize: 48 } }}
-        InputLabelProps={{ style: { fontSize: 24 } }}
-        autoFocus
-      />
-    );
-  }
-
   return cardElement;
 }
 
